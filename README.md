@@ -21,24 +21,25 @@ Proponowana podziałka:
 ```
 hotelService/
 ├── HotelService.java           # Interfejs RMI (średnio)
-├── Hotel.java                  # Klasa hotelu z listą pokoi (średnio)
+├── Rezerwacja.java             # Dane rezerwacji klienta (mało)
 
 hotelServer/
 ├── HotelServiceImpl.java       # Implementacja logiki RMI (dużo)
 
-Main.java                       # Test uruchomieniowy (mało)
 ```
 - osoba 2
 ```
 hotelService/
 ├── Pokoj.java                  # Dane pokoju (mało)
-├── Rezerwacja.java             # Dane rezerwacji klienta (mało)
+├── Hotel.java                  # Klasa hotelu z listą pokoi (średnio)
 
 hotelClient/
 └── MyClient.java               # Aplikacja klienta z interfejsem tekstowym (średnio)
 
 hotelServer/
 └── MyServer.java               # Uruchomienie serwera RMI (mało)
+
+Main.java                       # Test uruchomieniowy (mało)
 ```
 # Wersja duża fullstack- rozbudowana:
 ```
