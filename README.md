@@ -17,7 +17,7 @@ hotelClient/
 Main.java                       # (opcjonalnie) test uruchomieniowy (mało)
 ```
 Proponowana podziałka:
-- osoba 1
+- osoba 1 (Kacper W.)
 ```
 hotelService/
 ├── HotelService.java           # Interfejs RMI (średnio)
@@ -27,7 +27,7 @@ hotelServer/
 ├── HotelServiceImpl.java       # Implementacja logiki RMI (dużo)
 
 ```
-- osoba 2
+- osoba 2 (Dawid T.)
 ```
 hotelService/
 ├── Pokoj.java                  # Dane pokoju (mało)
