@@ -12,9 +12,9 @@ public interface HotelService extends Remote {
     
     boolean bookRoom(int roomId, String name, String surname, String phoneNumber, Date start, Date stop) throws RemoteException;
 
-    boolean cancelReservation(int reservationId, String name, String surname, String phoneNumber) throws RemoteException;
+    boolean cancelBooking(int bookingId, String name, String surname, String phoneNumber) throws RemoteException;
 
     // moje rezerwacje
-    List<Reservation> getReservations() throws RemoteException;
+    List<Booking> getBookings() throws RemoteException;
 
 }

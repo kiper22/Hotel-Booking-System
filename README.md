@@ -9,10 +9,10 @@ hotelService/
 
 hotelServer/
 ├── HotelServiceImpl.java       # Implementacja logiki RMI (dużo)
-├── MyServer.java               # Uruchomienie serwera RMI (mało)
+├── Server.java               # Uruchomienie serwera RMI (mało)
 
 hotelClient/
-└── MyClient.java               # Aplikacja klienta z interfejsem tekstowym (średnio)
+└── Client.java               # Aplikacja klienta z interfejsem tekstowym (średnio)
 
 Main.java                       # (opcjonalnie) test uruchomieniowy (mało)
 ```
@@ -34,10 +34,10 @@ hotelService/
 ├── Hotel.java                  # Klasa hotelu z listą pokoi (średnio)
 
 hotelClient/
-└── MyClient.java               # Aplikacja klienta z interfejsem tekstowym (średnio)
+└── Client.java               # Aplikacja klienta z interfejsem tekstowym (średnio)
 
 hotelServer/
-└── MyServer.java               # Uruchomienie serwera RMI (mało)
+└── Server.java               # Uruchomienie serwera RMI (mało)
 
 Main.java                       # Test uruchomieniowy (mało)
 ```
@@ -51,9 +51,9 @@ java-core/                     ← część obowiązkowa projektu (RMI)
 │   └── Rezerwacja.java
 ├── hotelServer/
 │   ├── HotelServiceImpl.java
-│   └── MyServer.java
+│   └── Server.java
 ├── hotelClient/
-│   └── MyClient.java
+│   └── Client.java
 └── Main.java
 
 client/                        ← frontend w React
