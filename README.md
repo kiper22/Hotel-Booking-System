@@ -5,7 +5,7 @@ hotelService/
 ├── HotelService.java           # Interfejs RMI (średnio)
 ├── Hotel.java                  # Klasa hotelu z listą pokoi (średnio)
 ├── Pokoj.java                  # Dane pokoju (mało)
-├── Rezerwacja.java             # Dane rezerwacji klienta (mało)
+├── Booking.java             # Dane rezerwacji klienta (mało)
 
 hotelServer/
 ├── HotelServiceImpl.java       # Implementacja logiki RMI (dużo)
@@ -21,7 +21,7 @@ Proponowana podziałka:
 ```
 hotelService/
 ├── HotelService.java           # Interfejs RMI (średnio)
-├── Rezerwacja.java             # Dane rezerwacji klienta (mało)
+├── Booking.java             # Dane rezerwacji klienta (mało)
 
 hotelServer/
 ├── HotelServiceImpl.java       # Implementacja logiki RMI (dużo)
@@ -48,7 +48,7 @@ java-core/                     ← część obowiązkowa projektu (RMI)
 │   ├── HotelService.java
 │   ├── Hotel.java
 │   ├── Pokoj.java
-│   └── Rezerwacja.java
+│   └── Booking.java
 ├── hotelServer/
 │   ├── HotelServiceImpl.java
 │   └── Server.java
