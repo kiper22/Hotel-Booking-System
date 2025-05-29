@@ -6,15 +6,24 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
+import hotelService.enums.RoomType;
+
 public interface HotelService extends Remote {
-    // na podstawie albo daty albo lokalizacji albo obu
+
+    // return all rooms or with specified filters
     List<Room> getAvailableRooms() throws RemoteException;
+    List<Room> getAvailableRooms(Date start, Date end, RoomType type, int guests) throws RemoteException;
+
     
     boolean bookRoom(int roomId, String name, String surname, String phoneNumber, Date start, Date stop) throws RemoteException;
-
     boolean cancelBooking(int bookingId, String name, String surname, String phoneNumber) throws RemoteException;
 
-    // moje rezerwacje
+    // booking info
     List<Booking> getBookings() throws RemoteException;
+    List<Booking> getBookingsForUser(String name, String surname, String phoneNumber) throws RemoteException;
+
+
+    List<Room> sortRoomsByPrice(boolean ascending) throws RemoteException;
+    List<Room> filterRoomsByOccupancy(int minOccupancy, int maxOccupancy) throws RemoteException;
 
 }
