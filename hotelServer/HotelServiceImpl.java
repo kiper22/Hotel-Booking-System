@@ -16,6 +16,7 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
 
     private List<Hotel> hotels;
     private List<Booking> bookings;
+    private int bookingCounter = 0;
 
     public HotelServiceImpl() throws RemoteException {
         super();
@@ -41,41 +42,121 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
         return availableRooms;
     }
 
+
+    private boolean isRoomBooked(int roomId, Date start, Date end) {
+        for (Booking booking : bookings) {
+            if (booking.getRoomId() == roomId && booking.getEndDate().after(start) && booking.getStartDate().before(end)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public List<Room> getAvailableRooms(Date start, Date end, RoomType type, int guests) throws RemoteException {
-        return ;
+        List<Room> availableRooms = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            for (Room room : hotel.getRooms()){
+                boolean isFree = room.isAvaliable() && room.getRoomType() == type && room.getMaxOccupancy() >= guests && !isRoomBooked(room.getRoomId(), start, end);
+                if (isFree) {
+                    availableRooms.add(room);
+                }
+            }
+        }
+        return availableRooms;
     }
 
 
     @Override
     public boolean bookRoom(int roomId, String name, String surname, String phoneNumber, Date start, Date stop) throws RemoteException {
-        return ;
+        if (isRoomBooked(roomId, start, stop)) {
+            return false;
+        }
+
+        double pricePerNight = 0.0;
+
+        for (Hotel hotel : hotels) {
+            for (Room room : hotel.getRooms()) {
+                if (room.getRoomId() == roomId) {
+                    pricePerNight = room.getPricePerNight();
+                    room.setAvaliable(false);
+                }
+            }
+        }
+
+        long milliseconds = stop.getTime() - start.getTime();
+        int numberOfDays = (int) Math.ceil(milliseconds / (1000.0 * 60 * 60 * 24));
+        double totalPrice = pricePerNight * numberOfDays;
+
+        Booking newBooking = new Booking(bookingCounter++, roomId, name, surname, phoneNumber, start, stop, totalPrice);
+        bookings.add(newBooking);
+
+        return true;
     }
 
     @Override
     public boolean cancelBooking(int bookingId, String name, String surname, String phoneNumber) throws RemoteException {
-        return ;
+        for (int i = 0; i < bookings.size(); i++) {
+            Booking b = bookings.get(i);
+            if (b.getBookingId() == bookingId && b.getCustomerName().equals(name) && b.getCustomerSurname().equals(surname) && b.getCustomerPhone().equals(phoneNumber)) {
+                for (Hotel hotel : hotels) {
+                    for (Room room : hotel.getRooms()) {
+                        if (room.getRoomId() == b.getRoomId()) {
+                            room.setAvaliable(true);
+                        }
+                    }
+                }
+                bookings.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public List<Booking> getBookings() throws RemoteException {
-        return ;
+        return bookings;
     }
 
     @Override
     public List<Booking> getBookingsForUser(String name, String surname, String phoneNumber) throws RemoteException {
-        return ;
+        List<Booking> result = new ArrayList<>();
+        for (Booking b : bookings) {
+            if (b.getCustomerName().equals(name) && b.getCustomerSurname().equals(surname) && b.getCustomerPhone().equals(phoneNumber)){
+                result.add(b);
+            }
+        }
+        return result;
     }
 
 
     @Override
     public List<Room> sortRoomsByPrice(boolean ascending) throws RemoteException {
-        return ;
+        List<Room> allRooms = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            allRooms.addAll(hotel.getRooms());
+        }
+
+        allRooms.sort((a, b) -> {
+            return ascending ?
+                Double.compare(a.getPricePerNight(), b.getPricePerNight()) :
+                Double.compare(b.getPricePerNight(), a.getPricePerNight());
+        });
+        return allRooms;
     }
 
     @Override
     public List<Room> filterRoomsByOccupancy(int minOccupancy, int maxOccupancy) throws RemoteException {
-        return ;
+        List<Room> filtered = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            for (Room room : hotel.getRooms()) {
+                int occ = room.getMaxOccupancy();
+                if (occ >= minOccupancy && occ <= maxOccupancy) {
+                    filtered.add(room);
+                }
+            }
+        }
+        return filtered;
     }
 
 }

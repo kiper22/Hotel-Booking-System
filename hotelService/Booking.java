@@ -25,35 +25,35 @@ public class Booking implements Serializable{
         this.totalPrice = totalPrice;
     }
 
-    public int getbookingId() {
+    public int getBookingId() {
         return bookingId;
     }
 
-    public int getroomId() {
+    public int getRoomId() {
         return roomId;
     }
 
-    public String getcustomerName (){
+    public String getCustomerName (){
         return customerName;
     }
 
-    public String getcustomerSurname() {
+    public String getCustomerSurname() {
         return customerSurname;
     }
 
-    public String getcustomerPhone (){
+    public String getCustomerPhone (){
         return customerPhone;
     }
 
-    public Date getstartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public Date getendDate (){
+    public Date getEndDate (){
         return endDate;
     }
 
-    public double gettotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
