@@ -1,9 +1,10 @@
 package hotelService;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hotel {
+public class Hotel implements Serializable {
     private int hotelId;
     private String name;
     private String address;
