@@ -1,7 +1,9 @@
 package hotelService;
 import hotelService.enums.RoomType;
 
-public class Room {
+import java.io.Serializable;
+
+public class Room implements Serializable {
     private int roomId;
     private RoomType roomType;
     private boolean isAvaliable;
@@ -64,5 +66,16 @@ public class Room {
 
     public void setPricePerNight(double pricePerNightByPerson) {
         this.pricePerNight = pricePerNightByPerson;
+    }
+
+
+    public String info(){
+        return "Room: \n" +
+                "ID: " + roomId + '\n' +
+                "Room type: " + roomType + '\n' +
+                "Avaliable: " + isAvaliable + '\n' +
+                "Description: " + description + '\n' +
+                "Max occupacy: " + maxOccupancy + '\n' +
+                "Price per night" + pricePerNight + '\n';
     }
 }
