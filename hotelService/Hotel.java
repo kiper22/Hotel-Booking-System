@@ -61,7 +61,6 @@ public class Hotel implements Serializable {
         return false;
     }
 
-
     private boolean datesOverlap(Date start1, Date end1, Date start2, Date end2) {
         start1 = stripTime(start1);
         end1 = stripTime(end1);
@@ -80,29 +79,4 @@ public class Hotel implements Serializable {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
-
-
-    public List<Room> findAvailableRooms(Date start, Date end, List<Booking> bookings) {
-        List<Room> availableRooms = new ArrayList<>();
-
-        for (Room room : rooms) {
-            boolean isBooked = false;
-
-            for (Booking booking : bookings) {
-                if (booking.getRoomId() == room.getRoomId()) {
-                    if (datesOverlap(booking.getStartDate(), booking.getEndDate(), start, end)) {
-                        isBooked = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!isBooked) {
-                availableRooms.add(room);
-            }
-        }
-
-        return availableRooms;
-    }
-
 }

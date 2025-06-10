@@ -2,15 +2,9 @@ package hotelServer;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import hotelService.Booking;
-import hotelService.Hotel;
-import hotelService.HotelService;
-import hotelService.Room;
+import hotelService.*;
 import hotelService.enums.RoomType;
 
 public class HotelServiceImpl extends UnicastRemoteObject implements HotelService {
@@ -18,6 +12,7 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
     private List<Hotel> hotels;
     private List<Booking> bookings;
     private int bookingCounter = 0;
+    private final List<RoomUpdateListener> listeners = new ArrayList<>();
 
     public HotelServiceImpl() throws RemoteException {
         super();
@@ -30,11 +25,14 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
         hotel.addRoom(new Room(101, RoomType.SINGLE_BED, "Pokój jednoosobowy", 1, 100.0));
         hotel.addRoom(new Room(102, RoomType.DOUBLE_BED, "Pokój dwuosobowy", 2, 180.0));
         hotel.addRoom(new Room(103, RoomType.FAMILY, "Pokój rodzinny", 4, 300.0));
-
+        hotel.addRoom(new Room(104, RoomType.DOUBLE_BED, "Pokój dwuosobowy", 2, 150.0));
+        hotel.addRoom(new Room(105, RoomType.DOUBLE_BED, "Pokój dwuosobowy", 2, 180.0));
+        hotel.addRoom(new Room(106, RoomType.FAMILY, "Pokój rodzinny", 4, 320.0));
+        hotel.addRoom(new Room(107, RoomType.SINGLE_BED, "Pokój dwuosobowy", 2, 150.0));
+        hotel.addRoom(new Room(108, RoomType.TRIPLE_BED, "Pokój trzyosobowy", 3, 270.0));
+        hotel.addRoom(new Room(109, RoomType.DOUBLE_BED, "Pokój dwuosobowy", 2, 160.0));
         hotels.add(hotel);
     }
-
-
 
     private boolean datesOverlap(Date start1, Date end1, Date start2, Date end2) {
         start1 = stripTime(start1);
@@ -81,42 +79,19 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
         for (Hotel hotel : hotels) {
             for (Room room : hotel.getRooms()) {
 
-                boolean fitsGuests = guests <= 0 || room.getMaxOccupancy() >= guests;
+                boolean guestsFiltr = guests <= 0 || room.getMaxOccupancy() >= guests;
                 boolean isFree = true;
 
                 if (start != null && end != null) {
                     isFree = !isRoomBooked(room.getRoomId(), start, end);
                 }
 
-                if (fitsGuests && isFree) {
+                if (guestsFiltr && isFree) {
                     availableRooms.add(room);
                 }
             }
         }
 
-        return availableRooms;
-    }
-
-    @Override
-    public List<Room> getAvailableRoomsWithoutAnyBooking() throws RemoteException {
-        List<Room> availableRooms = new ArrayList<>();
-
-        for (Hotel hotel : hotels) {
-            for (Room room : hotel.getRooms()) {
-                boolean hasAnyBooking = false;
-
-                for (Booking booking : bookings) {
-                    if (booking.getRoomId() == room.getRoomId()) {
-                        hasAnyBooking = true;
-                        break;
-                    }
-                }
-
-                if (!hasAnyBooking) {
-                    availableRooms.add(room);
-                }
-            }
-        }
         return availableRooms;
     }
 
@@ -127,7 +102,6 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
         }
 
         double pricePerNight = 0.0;
-
         for (Hotel hotel : hotels) {
             for (Room room : hotel.getRooms()) {
                 if (room.getRoomId() == roomId) {
@@ -142,7 +116,7 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
 
         Booking newBooking = new Booking(bookingCounter++, roomId, name, surname, phoneNumber, start, stop, totalPrice);
         bookings.add(newBooking);
-
+        notifyListeners();
         return true;
     }
 
@@ -152,6 +126,7 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
             Booking b = bookings.get(i);
             if (b.getBookingId() == bookingId && b.getCustomerName().equals(name) && b.getCustomerSurname().equals(surname) && b.getCustomerPhone().equals(phoneNumber)) {
                 bookings.remove(i);
+                notifyListeners();
                 return true;
             }
         }
@@ -176,11 +151,8 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
 
 
     @Override
-    public List<Room> sortRoomsByPrice(boolean ascending) throws RemoteException {
-        List<Room> allRooms = new ArrayList<>();
-        for (Hotel hotel : hotels) {
-            allRooms.addAll(hotel.getRooms());
-        }
+    public List<Room> sortRoomsByPrice(boolean ascending, Date start, Date end, int guests) throws RemoteException {
+        List<Room> allRooms = getAvailableRooms(start, end, guests);
 
         allRooms.sort((a, b) -> {
             return ascending ?
@@ -191,17 +163,25 @@ public class HotelServiceImpl extends UnicastRemoteObject implements HotelServic
     }
 
     @Override
-    public List<Room> filterRoomsByOccupancy(int minOccupancy, int maxOccupancy) throws RemoteException {
-        List<Room> filtered = new ArrayList<>();
-        for (Hotel hotel : hotels) {
-            for (Room room : hotel.getRooms()) {
-                int occ = room.getMaxOccupancy();
-                if (occ >= minOccupancy && occ <= maxOccupancy) {
-                    filtered.add(room);
-                }
-            }
-        }
-        return filtered;
+    public synchronized void registerListener(RoomUpdateListener listener) {
+        listeners.add(listener);
     }
 
+    @Override
+    public synchronized void unregisterListener(RoomUpdateListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyListeners() {
+        Iterator<RoomUpdateListener> iterator = listeners.iterator();
+
+        while (iterator.hasNext()) {
+            RoomUpdateListener listener = iterator.next();
+            try {
+                listener.onRoomChanged();
+            } catch (RemoteException e) {
+                iterator.remove();
+            }
+        }
+    }
 }

@@ -58,7 +58,6 @@ public class Room implements Serializable {
         this.pricePerNight = pricePerNightByPerson;
     }
 
-
     public String info(){
         return "Room: \n" +
                 "ID: " + roomId + '\n' +

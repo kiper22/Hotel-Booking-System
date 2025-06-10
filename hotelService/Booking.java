@@ -13,8 +13,6 @@ public class Booking implements Serializable{
     private Date startDate;
     private Date endDate;
     private double totalPrice;
-    private LocalTime checkInTime = LocalTime.of(16, 0);
-    private LocalTime checkOutTime = LocalTime.of(10, 0);
 
     public Booking(int bookingId, int roomId, String customerName, String customerSurname, String customerPhone,
             Date startDate, Date endDate, double totalPrice) {
@@ -61,21 +59,6 @@ public class Booking implements Serializable{
         return totalPrice;
     }
 
-    public LocalTime getCheckInTime() {
-        return checkInTime;
-    }
-
-    public void setCheckInTime(LocalTime checkInTime) {
-        this.checkInTime = checkInTime;
-    }
-
-    public LocalTime getCheckOutTime() {
-        return checkOutTime;
-    }
-
-    public void setCheckOutTime(LocalTime checkOutTime) {
-        this.checkOutTime = checkOutTime;
-    }
 
     public String info() {
         return "Booking{" +
