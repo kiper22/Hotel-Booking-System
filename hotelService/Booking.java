@@ -1,6 +1,7 @@
 package hotelService;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Booking implements Serializable{
@@ -12,6 +13,8 @@ public class Booking implements Serializable{
     private Date startDate;
     private Date endDate;
     private double totalPrice;
+    private LocalTime checkInTime = LocalTime.of(16, 0);
+    private LocalTime checkOutTime = LocalTime.of(10, 0);
 
     public Booking(int bookingId, int roomId, String customerName, String customerSurname, String customerPhone,
             Date startDate, Date endDate, double totalPrice) {
@@ -23,6 +26,7 @@ public class Booking implements Serializable{
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalPrice = totalPrice;
+
     }
 
     public int getBookingId() {
@@ -57,14 +61,30 @@ public class Booking implements Serializable{
         return totalPrice;
     }
 
+    public LocalTime getCheckInTime() {
+        return checkInTime;
+    }
+
+    public void setCheckInTime(LocalTime checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public LocalTime getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setCheckOutTime(LocalTime checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
+
     public String info() {
         return "Booking{" +
-                "ID=" + bookingId +
-                ", room=" + roomId +
-                ", client=" + customerName + " " + customerSurname +
-                ", phone=" + customerPhone +
-                ", from=" + startDate +
-                ", to=" + endDate +
+                "ID=" + bookingId + '\n' +
+                ", room=" + roomId + '\n' +
+                ", client=" + customerName + " " + customerSurname + '\n' +
+                ", phone=" + customerPhone + '\n' +
+                ", from=" + startDate + '\n' +
+                ", to=" + endDate + '\n' +
                 ", total=" + totalPrice +
                 '}';
     }
